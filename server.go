@@ -3,11 +3,9 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"net/http"
-	"strconv"
 
-	"test"
+	"GOssenger/handlers"
 
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
@@ -25,7 +23,6 @@ const (
 )
 
 func main() {
-	test.Rest()
 	address := fmt.Sprintf("%s:%d", siteHost, sitePort)
 	fmt.Printf("Starting server on port %s", address)
 	createServer(":8080")
@@ -36,8 +33,8 @@ func main() {
 
 func createServer(address string) {
 	router := mux.NewRouter()
-	router.HandleFunc("/{chat_id:[0-9]+}", chatHandler)
-	router.HandleFunc("/", indexHandler)
+	router.HandleFunc("/{chat_id:[0-9]+}", handlers.ChatHandler)
+	router.HandleFunc("/", handlers.IndexHandler)
 	http.Handle("/", router)
 
 	http.ListenAndServe(address, nil)
@@ -56,15 +53,8 @@ func connectToDb() *sql.DB {
 	return connector
 }
 
-func chatHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	chatID, _ := strconv.ParseInt(vars["chat_id"], 10, 64)
-	fmt.Fprintf(w, "You are in %d chat", chatID)
-}
-
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("Someone have connected")
-	fmt.Fprint(w, "Hello on my chat")
+func Hello() string {
+	return "Just for test"
 }
 
 type user struct {
