@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"GOssenger/handlers"
+	"GOssenger/dashboard"
+	"GOssenger/handler"
 
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
@@ -33,9 +34,10 @@ func main() {
 
 func createServer(address string) {
 	router := mux.NewRouter()
-	router.HandleFunc("/{chat_id:[0-9]+}", handlers.ChatHandler)
-	router.HandleFunc("/", handlers.IndexHandler)
+	router.HandleFunc("/{chat_id:[0-9]+}", handler.ChatHandler)
+	router.HandleFunc("/", handler.IndexHandler)
 	http.Handle("/", router)
+	dashboard.CreateRouter(router)
 
 	http.ListenAndServe(address, nil)
 }
