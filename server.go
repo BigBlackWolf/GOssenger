@@ -1,66 +1,36 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"net/http"
 
+	"GOssenger/chat"
 	"GOssenger/dashboard"
-	"GOssenger/handler"
 
 	"github.com/gorilla/mux"
-	_ "github.com/lib/pq"
 )
 
 const (
-	dbHost     = "localhost"
-	dbPort     = 5432
-	dbUser     = "postgres"
-	dbPassword = ""
-	dbName     = "testing"
-	dbSslmode  = "disable"
-	siteHost   = "127.0.0.1"
-	sitePort   = 8080
+	siteHost = "127.0.0.1"
+	sitePort = 8080
 )
 
 func main() {
 	address := fmt.Sprintf("%s:%d", siteHost, sitePort)
 	fmt.Printf("Starting server on port %s", address)
 	createServer(":8080")
-
-	connector := connectToDb()
-	fmt.Println(connector)
 }
 
 func createServer(address string) {
 	router := mux.NewRouter()
-	router.HandleFunc("/{chat_id:[0-9]+}", handler.ChatHandler)
-	router.HandleFunc("/", handler.IndexHandler)
+	router.HandleFunc("/{chat_id:[0-9]+}", chat.ChatHandler)
+	router.HandleFunc("/", chat.IndexHandler)
 	http.Handle("/", router)
 	dashboard.CreateRouter(router)
 
 	http.ListenAndServe(address, nil)
 }
 
-func connectToDb() *sql.DB {
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s"+
-		"password=%s dbname=%s sslmode=%s",
-		dbHost, dbPort, dbUser, dbPassword, dbName, dbSslmode)
-
-	connector, err := sql.Open("postgres", psqlInfo)
-	if err != nil {
-		panic(err)
-	}
-
-	return connector
-}
-
 func Hello() string {
 	return "Just for test"
-}
-
-type user struct {
-	ID       int64
-	Username string
-	Email    string
 }
