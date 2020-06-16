@@ -12,5 +12,6 @@ To start you need to clone repository and create mongo database named **Dashboar
 ```bash
 go run server.go &
 cd client/
+npm install
 npm start
 ```
