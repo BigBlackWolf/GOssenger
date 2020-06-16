@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 
 	"GOssenger/dashboard/models"
 
@@ -67,9 +66,8 @@ func TaskHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 	w.Header().Set("Content-Type", "application/json")
 	vars := mux.Vars(r)
-	task_id, _ := strconv.Atoi(vars["task_id"])
 	var result models.Task
-	filter := bson.D{{"id", task_id}}
+	filter := bson.D{{"id", vars["title"]}}
 	collection.FindOne(context.TODO(), filter).Decode(&result)
 	json.NewEncoder(w).Encode(result)
 }
@@ -99,9 +97,8 @@ func DeleteTaskHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 	vars := mux.Vars(r)
-	id, _ := strconv.Atoi(vars["task_id"])
 
-	filter := bson.M{"id": id}
+	filter := bson.M{"title": vars["title"]}
 	d, err := collection.DeleteOne(context.TODO(), filter)
 	if err != nil {
 		log.Fatal(err)

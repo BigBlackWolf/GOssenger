@@ -62,7 +62,7 @@ class TODOList extends Component {
                         }
 
                         return (
-                            <Card key={item.id} color={color} fluid>
+                            <Card key={item.title} color={color} fluid>
                                 <Card.Content>
                                     <Card.Header textAlign="left">
                                         <div style={{ wordWrap: "break-word" }}>{item.title}</div>
@@ -72,19 +72,19 @@ class TODOList extends Component {
                                         <Icon 
                                             name="check circle"
                                             color="green"
-                                            onClick={() => this.updateTask(item.id)}
+                                            onClick={() => this.updateTask(item.title)}
                                         />
                                         <span style={{ paddingRight: 10 }}>Done</span>
                                         <Icon 
                                             name="undo"
                                             color="yellow"
-                                            onClick={() => this.undoTask(item.id)}
+                                            onClick={() => this.undoTask(item.title)}
                                         />
                                         <span style={{ paddingRight: 10 }}>Undo</span>
                                         <Icon
                                             name="delete"
                                             color="red"
-                                            onClick={() => this.deleteTask(item.id)}
+                                            onClick={() => this.deleteTask(item.title)}
                                         />
                                         <span style={{ paddingRight: 10 }}>Delete</span>
                                     </Card.Meta>
@@ -101,8 +101,8 @@ class TODOList extends Component {
         });
     };
 
-    deleteTask = id => {
-        fetch(endpoint + id, {method: "DELETE"})
+    deleteTask = title => {
+        fetch(endpoint + title, {method: "DELETE"})
           .then(res => {
             console.log(res);
             this.getTask();

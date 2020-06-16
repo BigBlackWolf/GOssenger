@@ -12,7 +12,7 @@ func CreateRouter(router *mux.Router) *mux.Router {
 	sub.HandleFunc("/", handlers.IndexHandler).Methods("GET", "OPTIONS")
 	sub.HandleFunc("", handlers.AddTaskHandler).Methods("POST", "OPTIONS")
 	sub.HandleFunc("/", handlers.AddTaskHandler).Methods("POST", "OPTIONS")
-	sub.HandleFunc("/{task_id:[0-9]+}", handlers.TaskHandler).Methods("GET", "OPTIONS")
-	sub.HandleFunc("/{task_id:[0-9]+}", handlers.DeleteTaskHandler).Methods("DELETE", "OPTIONS")
+	sub.HandleFunc("/{title}", handlers.TaskHandler).Methods("GET", "OPTIONS")
+	sub.HandleFunc("/{title}", handlers.DeleteTaskHandler).Methods("DELETE", "OPTIONS")
 	return router
 }
