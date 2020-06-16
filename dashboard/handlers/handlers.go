@@ -12,7 +12,6 @@ import (
 
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -39,24 +38,34 @@ func init() {
 }
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	curr, err := collection.Find(context.TODO(), bson.D{{}})
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+	options := options.Find().SetSort(bson.D{{"_id", -1}})
+	curr, err := collection.Find(context.TODO(), bson.D{}, options)
 	if err != nil {
 		log.Fatal(nil)
 	}
-	var results []primitive.M
+	var results []models.Task
 	for curr.Next(context.TODO()) {
-		var result bson.M
+		var result models.Task
 		e := curr.Decode(&result)
 		if e != nil {
 			log.Fatal(e)
 		}
 		results = append(results, result)
 	}
+
+	// sort.Sort(models.ByID(results))
 	curr.Close(context.TODO())
 	json.NewEncoder(w).Encode(results)
 }
 
 func TaskHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "DELETE, POST, OPTIONS, GET")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+	w.Header().Set("Content-Type", "application/json")
 	vars := mux.Vars(r)
 	task_id, _ := strconv.Atoi(vars["task_id"])
 	var result models.Task
@@ -66,6 +75,11 @@ func TaskHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func AddTaskHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Context-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+	w.Header().Set("Access-Control-Allow-Methods", "DELETE, POST, OPTIONS, GET")
+	w.Header().Set("Content-Type", "application/json")
 	decoder := json.NewDecoder(r.Body)
 	var res models.Task
 	err := decoder.Decode(&res)
@@ -81,6 +95,9 @@ func AddTaskHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteTaskHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["task_id"])
 
