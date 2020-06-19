@@ -8,6 +8,7 @@ import (
 	"GOssenger/dashboard"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 const (
@@ -28,7 +29,12 @@ func createServer(address string) {
 	http.Handle("/", router)
 	dashboard.CreateRouter(router)
 
-	http.ListenAndServe(address, nil)
+	corsWrapper := cors.New(cors.Options{
+		AllowedMethods: []string{"GET", "POST", "DELETE"},
+		AllowedHeaders: []string{"Content-Type", "Origin", "Accept", "*"},
+	})
+
+	http.ListenAndServe(address, corsWrapper.Handler(router))
 }
 
 func Hello() string {
