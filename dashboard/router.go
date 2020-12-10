@@ -2,11 +2,13 @@ package dashboard
 
 import (
 	"GOssenger/dashboard/handlers"
+	"GOssenger/dashboard/models"
 
 	"github.com/gorilla/mux"
 )
 
 func CreateRouter(router *mux.Router) *mux.Router {
+	models.Init()
 	sub := router.PathPrefix("/dashboard").Subrouter()
 	sub.HandleFunc("", handlers.IndexHandler).Methods("GET", "OPTIONS")
 	sub.HandleFunc("/", handlers.IndexHandler).Methods("GET", "OPTIONS")

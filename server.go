@@ -18,7 +18,7 @@ const (
 
 func main() {
 	address := fmt.Sprintf("%s:%d", siteHost, sitePort)
-	fmt.Printf("Starting server on port %s", address)
+	fmt.Println(fmt.Sprintf("Starting server on port %s", address))
 	createServer(":8080")
 }
 
